@@ -1,5 +1,6 @@
 import os
 import cv2
+import shutil
 from tqdm import tqdm
 from modules.utils import images_options
 from modules.utils import bcolors as bc
@@ -112,17 +113,18 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
         images_label_list = list(set(downloaded_images_list))
 
         groups = df_val[(df_val.LabelName == class_code)].groupby(df_val.ImageID)
-        for image in images_label_list:
+        for count, image in enumerate(images_label_list,1):
             try:
                 current_image_path = os.path.join(download_dir, image + '.jpg')
                 dataset_image = cv2.imread(current_image_path)
                 boxes = groups.get_group(image.split('.')[0])[['XMin', 'XMax', 'YMin', 'YMax']].values.tolist()
-                file_name = str(image.split('.')[0]) + '.txt'
+                file_name = 'img_' + str(count) + '.txt'
                 file_path = os.path.join(label_dir, file_name)
                 if os.path.isfile(file_path):
                     f = open(file_path, 'a')
                 else:
                     f = open(file_path, 'w')
+                    shutil.copy(current_image_path, os.path.join(download_dir, 'img_' + str(count) + '.jpg'))
 
                 for box in boxes:
                     box[0] *= int(dataset_image.shape[1])
