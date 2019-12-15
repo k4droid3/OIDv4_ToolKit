@@ -1,6 +1,5 @@
 import os
 import cv2
-import shutil
 from tqdm import tqdm
 from modules.utils import images_options
 from modules.utils import bcolors as bc
@@ -124,7 +123,7 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
                     f = open(file_path, 'a')
                 else:
                     f = open(file_path, 'w')
-                    shutil.copy(current_image_path, os.path.join(download_dir, 'img_' + str(count) + '.jpg'))
+                    os.rename(current_image_path, os.path.join(download_dir, 'img_' + str(count) + '.jpg'))
 
                 for box in boxes:
                     box[0] *= int(dataset_image.shape[1])
